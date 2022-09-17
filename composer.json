@@ -1,0 +1,38 @@
+{
+    "name": "sofyco/spider",
+    "type": "library",
+    "description": "Crawler + Scraper + Parser library",
+    "keywords": ["php", "crawler", "scraper", "parser", "builder"],
+    "homepage": "https://github.com/sofyco/spider",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sofy Korzhova",
+            "email": "sofykorzhova@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "symfony/css-selector": "^6.0",
+        "symfony/dom-crawler": "^6.0",
+        "symfony/http-client": "^6.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.8",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sofyco\\Spider\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sofyco\\Spider\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+}

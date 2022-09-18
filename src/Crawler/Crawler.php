@@ -44,7 +44,7 @@ final class Crawler implements CrawlerInterface
             }
 
             $cache[] = $url;
-            $childContext = new Context(url: $url, parent: $context);
+            $childContext = new Context(url: $url);
 
             yield $childContext;
             yield from $this->getCachedResult($childContext, $cache);

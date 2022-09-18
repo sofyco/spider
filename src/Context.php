@@ -4,17 +4,12 @@ namespace Sofyco\Spider;
 
 final class Context implements ContextInterface
 {
-    public function __construct(private readonly string $url, private readonly ?ContextInterface $parent = null)
+    public function __construct(private readonly string $url)
     {
     }
 
     public function getUrl(): string
     {
         return $this->url;
-    }
-
-    public function getParent(): ?ContextInterface
-    {
-        return $this->parent;
     }
 }

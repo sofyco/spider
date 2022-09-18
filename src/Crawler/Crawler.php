@@ -11,8 +11,11 @@ use Sofyco\Spider\Scraper\ScraperInterface;
 
 final class Crawler implements CrawlerInterface
 {
+    private readonly NodeInterface $node;
+
     public function __construct(private readonly ScraperInterface $scraper, private readonly ParserInterface $parser)
     {
+        $this->node = new Node(type: Node\Type::ATTRIBUTE, selector: 'a', attribute: 'href');
     }
 
     /**
@@ -22,38 +25,53 @@ final class Crawler implements CrawlerInterface
      */
     public function getResult(ContextInterface $context): iterable
     {
-        $node = new Node(type: Node\Type::ATTRIBUTE, selector: 'a', attribute: 'href');
-        $result = [];
+        $cache = [$context->getUrl()];
 
-        $this->addLinks($result, $context, $node);
-
-        yield from \array_values($result);
+        yield from $this->getCachedResult($context, $cache);
     }
 
-    private function addLinks(array &$result, ContextInterface $context, NodeInterface $node): void
+    public function getCachedResult(ContextInterface $context, array &$cache = []): iterable
     {
         $content = $this->scraper->getResult($context);
-        $links = $this->parser->getResult($content, $node);
-        $parent = (array) \parse_url($context->getUrl());
-        $scheme = $parent['scheme'] ?? '';
-        $host = $parent['host'] ?? '';
 
-        foreach ($links as $url) {
-            $urlHost = \parse_url($url, \PHP_URL_HOST);
-
-            if (null === $urlHost) {
-                $url = $scheme . '://' . $host . (\str_starts_with($url, '/') ? '' : '/') . $url;
-            } elseif ($urlHost !== $host) {
+        foreach ($this->parser->getResult($content, $this->node) as $link) {
+            if (null === $url = $this->prepareUrl($link, $context)) {
                 continue;
             }
 
-            if (isset($result[$url]) || $url === $context->getUrl()) {
+            if (\in_array($url, $cache)) {
                 continue;
             }
 
-            $result[$url] = new Context(url: $url, parent: $context);
+            $cache[] = $url;
+            $childContext = new Context(url: $url, parent: $context);
 
-            $this->addLinks($result, $result[$url], $node);
+            yield $childContext;
+            yield from $this->getCachedResult($childContext, $cache);
         }
+    }
+
+    private function prepareUrl(string $origin, ContextInterface $context): ?string
+    {
+        $child = (array) \parse_url($origin);
+        $parent = (array) \parse_url($context->getUrl());
+
+        $url = $child['scheme'] ?? $parent['scheme'] ?? 'https';
+        $url .= '://';
+        $url .= $child['host'] ?? $parent['host'] ?? throw new \InvalidArgumentException($origin);
+
+        if (isset($child['path'])) {
+            $url .= $child['path'];
+        }
+
+        if (isset($child['query'])) {
+            $url .= '?' . $child['query'];
+        }
+
+        if (($child['host'] ?? '') !== ($parent['host'] ?? '')) {
+            return null;
+        }
+
+        return $url;
     }
 }

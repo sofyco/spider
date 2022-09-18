@@ -32,15 +32,17 @@ final class CrawlerTest extends TestCase
 
         $crawler = new Crawler(scraper: $scraper, parser: new Parser());
 
+        $index = 0;
         $expected = [
             ['url' => 'https://localhost/page2', 'parent' => 'https://localhost/page1'],
-            ['url' => 'https://localhost/page1', 'parent' => 'https://localhost/page2'],
             ['url' => 'https://localhost/page3', 'parent' => 'https://localhost/page2'],
         ];
 
-        foreach ($crawler->getResult($context) as $index => $childContext) {
+        foreach ($crawler->getResult($context) as $childContext) {
             self::assertSame($expected[$index]['url'], $childContext->getUrl());
             self::assertSame($expected[$index]['parent'], $childContext->getParent()?->getUrl());
+
+            ++$index;
         }
     }
 }

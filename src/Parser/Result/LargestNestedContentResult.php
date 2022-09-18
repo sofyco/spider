@@ -10,8 +10,11 @@ final class LargestNestedContentResult implements ResultInterface
     public function getResult(Crawler $crawler, NodeInterface $node): iterable
     {
         $crawler = $this->removeElements($crawler, 'style', 'script');
+        $element = $this->getLargestNestedElement($crawler->filter($node->getSelector()));
 
-        yield $this->getLargestNestedElement($crawler->filter($node->getSelector()))->text();
+        if ($element->count()) {
+            yield $element->text();
+        }
     }
 
     private function getLargestNestedElement(Crawler $currentElement): Crawler

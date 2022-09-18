@@ -43,6 +43,16 @@ final class ParserTest extends TestCase
         ];
 
         $node = $this->createMock(NodeInterface::class);
+        $node->expects($this->any())->method('getType')->willReturn(Type::TEXT);
+        $node->expects($this->any())->method('getSelector')->willReturn('strong');
+
+        yield 'Text type of undefined element' => [
+            'node' => $node,
+            'response' => $response,
+            'expected' => [],
+        ];
+
+        $node = $this->createMock(NodeInterface::class);
         $node->expects($this->any())->method('getType')->willReturn(Type::HTML);
         $node->expects($this->any())->method('getSelector')->willReturn('ul li a');
 
@@ -54,6 +64,16 @@ final class ParserTest extends TestCase
                 '<a href="https://localhost">Link #2</a>',
                 '<a href="https://localhost">Link #3</a>',
             ],
+        ];
+
+        $node = $this->createMock(NodeInterface::class);
+        $node->expects($this->any())->method('getType')->willReturn(Type::HTML);
+        $node->expects($this->any())->method('getSelector')->willReturn('strong');
+
+        yield 'HTML type of undefined element' => [
+            'node' => $node,
+            'response' => $response,
+            'expected' => [],
         ];
 
         $node = $this->createMock(NodeInterface::class);
@@ -71,10 +91,32 @@ final class ParserTest extends TestCase
 
         $node = $this->createMock(NodeInterface::class);
         $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
+        $node->expects($this->any())->method('getSelector')->willReturn('strong');
+        $node->expects($this->any())->method('getAttribute')->willReturn('content');
+
+        yield 'Attribute type of undefined element' => [
+            'node' => $node,
+            'response' => $response,
+            'expected' => [],
+        ];
+
+        $node = $this->createMock(NodeInterface::class);
+        $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
+        $node->expects($this->any())->method('getSelector')->willReturn('meta');
+        $node->expects($this->any())->method('getAttribute')->willReturn('data-id');
+
+        yield 'Attribute type of undefined attribute name' => [
+            'node' => $node,
+            'response' => $response,
+            'expected' => [],
+        ];
+
+        $node = $this->createMock(NodeInterface::class);
+        $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
         $node->expects($this->any())->method('getSelector')->willReturn('meta[property]');
         $node->expects($this->any())->method('getAttribute')->willReturn('content');
 
-        yield 'Attribute type' => [
+        yield 'Attribute type with few results' => [
             'node' => $node,
             'response' => $response,
             'expected' => [
@@ -93,6 +135,16 @@ final class ParserTest extends TestCase
             'expected' => [
                 'Title of article Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean porta nec urna a finibus. Etiam fermentum suscipit mi eu finibus. Donec risus diam, fringilla id varius vel, varius ac ipsum. Integer blandit eros in interdum fringilla. Sed vel dui vestibulum, varius tortor eget, laoreet est. Link #1 Link #2 Link #3',
             ],
+        ];
+
+        $node = $this->createMock(NodeInterface::class);
+        $node->expects($this->any())->method('getType')->willReturn(Type::LARGEST_NESTED_CONTENT);
+        $node->expects($this->any())->method('getSelector')->willReturn('nav');
+
+        yield 'Largest Nested Content type of undefined element' => [
+            'node' => $node,
+            'response' => $response,
+            'expected' => [],
         ];
     }
 }

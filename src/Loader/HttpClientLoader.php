@@ -11,7 +11,7 @@ final class HttpClientLoader implements LoaderInterface
     {
     }
 
-    public function load(ContextInterface $context): string
+    public function getContent(ContextInterface $context): string
     {
         return $this->httpClient->request('GET', $context->getUrl())->getContent();
     }

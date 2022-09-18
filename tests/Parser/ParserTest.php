@@ -27,7 +27,7 @@ final class ParserTest extends TestCase
 
     public function typeProvider(): iterable
     {
-        $response = (string) \file_get_contents(__DIR__ . '/stub/index.html');
+        $response = (string) \file_get_contents(__DIR__ . '/stubs/index.html');
 
         $node = $this->createMock(NodeInterface::class);
         $node->expects($this->any())->method('getType')->willReturn(Type::TEXT);

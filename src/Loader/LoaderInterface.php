@@ -6,5 +6,5 @@ use Sofyco\Spider\ContextInterface;
 
 interface LoaderInterface
 {
-    public function load(ContextInterface $context): string;
+    public function getContent(ContextInterface $context): string;
 }

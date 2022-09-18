@@ -24,11 +24,11 @@ final class Parser implements ParserInterface
 
     public function getResult(string $response, NodeInterface $node): iterable
     {
-        $typeResult = $this->map[$node->getType()];
-
-        if (null === $typeResult) {
-            throw new \InvalidArgumentException('Invalid node type');
+        if (false === isset($this->map[$node->getType()])) {
+            throw new Exception\UnexpectedTypeException($node->getType());
         }
+
+        $typeResult = $this->map[$node->getType()];
 
         yield from $typeResult->getResult(new Crawler($response), $node);
     }

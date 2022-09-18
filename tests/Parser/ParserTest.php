@@ -5,6 +5,7 @@ namespace Sofyco\Spider\Tests\Parser;
 use PHPUnit\Framework\TestCase;
 use Sofyco\Spider\Parser\Builder\Node\Type;
 use Sofyco\Spider\Parser\Builder\NodeInterface;
+use Sofyco\Spider\Parser\Exception\UnexpectedTypeException;
 use Sofyco\Spider\Parser\Parser;
 
 final class ParserTest extends TestCase
@@ -113,6 +114,16 @@ final class ParserTest extends TestCase
 
         $node = $this->createMock(NodeInterface::class);
         $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
+        $node->expects($this->any())->method('getSelector')->willReturn('meta');
+
+        yield 'Attribute type with empty attribute name' => [
+            'node' => $node,
+            'response' => $response,
+            'expected' => [],
+        ];
+
+        $node = $this->createMock(NodeInterface::class);
+        $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
         $node->expects($this->any())->method('getSelector')->willReturn('meta[property]');
         $node->expects($this->any())->method('getAttribute')->willReturn('content');
 
@@ -146,5 +157,25 @@ final class ParserTest extends TestCase
             'response' => $response,
             'expected' => [],
         ];
+    }
+
+    public function testUnexpectedType(): void
+    {
+        $node = $this->createMock(NodeInterface::class);
+        $node->expects($this->any())->method('getType')->willReturn(Type::TEXT);
+
+        $parser = new Parser();
+
+        $property = new \ReflectionProperty(class: Parser::class, property: 'map');
+        $property->setValue($parser, new \WeakMap());
+
+        $this->expectException(UnexpectedTypeException::class);
+
+        $result = $parser->getResult('', $node);
+
+        self::assertIsIterable($result);
+
+        foreach ($result as $value) {
+        }
     }
 }

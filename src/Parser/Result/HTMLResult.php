@@ -17,14 +17,12 @@ final class HTMLResult implements ResultInterface
 
         /** @var \DOMElement $element */
         foreach ($elements as $element) {
-            if (null === $element->ownerDocument) {
-                continue;
-            }
+            if (null !== $element->ownerDocument) {
+                $value = \trim((string) $element->ownerDocument->saveHTML($element));
 
-            $value = \trim((string) $element->ownerDocument->saveHTML($element));
-
-            if (false === empty($value)) {
-                yield $value;
+                if (false === empty($value)) {
+                    yield $value;
+                }
             }
         }
     }

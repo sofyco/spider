@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Sofyco\Spider\ContextInterface;
 use Sofyco\Spider\Loader\LoaderInterface;
 use Sofyco\Spider\Scraper\Scraper;
-use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 final class ScraperTest extends TestCase
 {
@@ -21,8 +21,7 @@ final class ScraperTest extends TestCase
         $loader = $this->createMock(LoaderInterface::class);
         $loader->expects($this->any())->method('getContent')->willReturn($content);
 
-        $cache = $this->createMock(CacheInterface::class);
-        $cache->expects($this->any())->method('get')->willReturn($content);
+        $cache = new ArrayAdapter();
 
         $scraper = new Scraper($loader, $cache);
 

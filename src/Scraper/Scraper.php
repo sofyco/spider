@@ -17,7 +17,6 @@ final class Scraper implements ScraperInterface
     {
         $value = $this->cache->get(\md5($context->getUrl()), function (ItemInterface $item) use ($context) {
             $item->expiresAfter($context->getExpiresAfter());
-            $item->tag((string) \parse_url($context->getUrl(), \PHP_URL_HOST));
 
             return $this->loader->getContent($context);
         });

@@ -17,6 +17,7 @@ final class ScraperTest extends TestCase
 
         $context = $this->createMock(ContextInterface::class);
         $context->expects($this->any())->method('getUrl')->willReturn($url);
+        $context->expects($this->any())->method('getExpiresAfter')->willReturn(100);
 
         $loader = $this->createMock(LoaderInterface::class);
         $loader->expects($this->any())->method('getContent')->willReturn($content);

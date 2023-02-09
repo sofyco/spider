@@ -2,9 +2,9 @@
 
 namespace Sofyco\Spider;
 
-final class Context implements ContextInterface
+final readonly class Context implements ContextInterface
 {
-    public function __construct(private readonly string $url, private readonly int $expiresAfter = 3600)
+    public function __construct(private string $url, private int $expiresAfter = 3600)
     {
     }
 

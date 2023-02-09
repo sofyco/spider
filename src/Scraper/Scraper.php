@@ -7,9 +7,9 @@ use Sofyco\Spider\Loader\LoaderInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
-final class Scraper implements ScraperInterface
+final readonly class Scraper implements ScraperInterface
 {
-    public function __construct(private readonly LoaderInterface $loader, private readonly CacheInterface $cache)
+    public function __construct(private LoaderInterface $loader, private CacheInterface $cache)
     {
     }
 

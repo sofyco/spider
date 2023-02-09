@@ -8,9 +8,6 @@ use Symfony\Component\DomCrawler\Crawler;
 interface ResultInterface
 {
     /**
-     * @param Crawler       $crawler
-     * @param NodeInterface $node
-     *
      * @return string[]
      */
     public function getResult(Crawler $crawler, NodeInterface $node): iterable;

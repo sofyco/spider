@@ -10,8 +10,6 @@ use Sofyco\Spider\ContextInterface;
 interface CrawlerInterface
 {
     /**
-     * @param ContextInterface $context
-     *
      * @return ContextInterface[]
      */
     public function getResult(ContextInterface $context): iterable;

@@ -9,18 +9,16 @@ use Sofyco\Spider\Parser\Builder\NodeInterface;
 use Sofyco\Spider\Parser\ParserInterface;
 use Sofyco\Spider\Scraper\ScraperInterface;
 
-final class Crawler implements CrawlerInterface
+final readonly class Crawler implements CrawlerInterface
 {
-    private readonly NodeInterface $node;
+    private NodeInterface $node;
 
-    public function __construct(private readonly ScraperInterface $scraper, private readonly ParserInterface $parser)
+    public function __construct(private ScraperInterface $scraper, private ParserInterface $parser)
     {
         $this->node = new Node(type: Node\Type::ATTRIBUTE, selector: 'a', attribute: 'href');
     }
 
     /**
-     * @param ContextInterface $context
-     *
      * @return ContextInterface[]
      */
     public function getResult(ContextInterface $context): iterable

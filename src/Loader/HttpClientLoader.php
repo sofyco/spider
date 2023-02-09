@@ -5,9 +5,9 @@ namespace Sofyco\Spider\Loader;
 use Sofyco\Spider\ContextInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class HttpClientLoader implements LoaderInterface
+final readonly class HttpClientLoader implements LoaderInterface
 {
-    public function __construct(private readonly HttpClientInterface $httpClient)
+    public function __construct(private HttpClientInterface $httpClient)
     {
     }
 

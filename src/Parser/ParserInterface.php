@@ -10,9 +10,6 @@ use Sofyco\Spider\Parser\Builder\NodeInterface;
 interface ParserInterface
 {
     /**
-     * @param string        $response
-     * @param NodeInterface $node
-     *
      * @return string[]
      */
     public function getResult(string $response, NodeInterface $node): iterable;

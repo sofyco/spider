@@ -4,6 +4,7 @@ namespace Sofyco\Spider\Parser\Builder\Node;
 
 enum Type: string
 {
+    case XML = 'xml';
     case TEXT = 'text';
     case HTML = 'html';
     case ATTRIBUTE = 'attribute';

@@ -3,6 +3,7 @@
 namespace Sofyco\Spider\Tests\Parser;
 
 use PHPUnit\Framework\TestCase;
+use Sofyco\Spider\Parser\Builder\Node;
 use Sofyco\Spider\Parser\Builder\Node\Type;
 use Sofyco\Spider\Parser\Builder\NodeInterface;
 use Sofyco\Spider\Parser\Exception\UnexpectedTypeException;
@@ -29,12 +30,8 @@ final class ParserTest extends TestCase
     {
         $response = (string) \file_get_contents(__DIR__ . '/stubs/index.html');
 
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::TEXT);
-        $node->expects($this->any())->method('getSelector')->willReturn('a');
-
         yield 'Text type' => [
-            'node' => $node,
+            'node' => new Node(type: Type::TEXT, selector: 'a'),
             'response' => $response,
             'expected' => [
                 'Link #1',
@@ -43,22 +40,14 @@ final class ParserTest extends TestCase
             ],
         ];
 
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::TEXT);
-        $node->expects($this->any())->method('getSelector')->willReturn('strong');
-
         yield 'Text type of undefined element' => [
-            'node' => $node,
+            'node' => new Node(type: Type::TEXT, selector: 'strong'),
             'response' => $response,
             'expected' => [],
         ];
 
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::HTML);
-        $node->expects($this->any())->method('getSelector')->willReturn('ul li a');
-
         yield 'HTML type' => [
-            'node' => $node,
+            'node' => new Node(type: Type::HTML, selector: 'ul li a'),
             'response' => $response,
             'expected' => [
                 '<a href="https://localhost">Link #1</a>',
@@ -67,68 +56,40 @@ final class ParserTest extends TestCase
             ],
         ];
 
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::HTML);
-        $node->expects($this->any())->method('getSelector')->willReturn('strong');
-
         yield 'HTML type of undefined element' => [
-            'node' => $node,
+            'node' => new Node(type: Type::HTML, selector: 'strong'),
             'response' => $response,
             'expected' => [],
         ];
 
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
-        $node->expects($this->any())->method('getSelector')->willReturn('meta[property="og:title"]');
-        $node->expects($this->any())->method('getAttribute')->willReturn('content');
-
         yield 'Attribute type with single result' => [
-            'node' => $node,
+            'node' => new Node(type: Type::ATTRIBUTE, selector: 'meta[property="og:title"]', attribute: 'content'),
             'response' => $response,
             'expected' => [
                 'Google title of article',
             ],
         ];
 
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
-        $node->expects($this->any())->method('getSelector')->willReturn('strong');
-        $node->expects($this->any())->method('getAttribute')->willReturn('content');
-
         yield 'Attribute type of undefined element' => [
-            'node' => $node,
+            'node' => new Node(type: Type::ATTRIBUTE, selector: 'strong', attribute: 'content'),
             'response' => $response,
             'expected' => [],
         ];
-
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
-        $node->expects($this->any())->method('getSelector')->willReturn('meta');
-        $node->expects($this->any())->method('getAttribute')->willReturn('data-id');
 
         yield 'Attribute type of undefined attribute name' => [
-            'node' => $node,
+            'node' => new Node(type: Type::ATTRIBUTE, selector: 'meta', attribute: 'data-id'),
             'response' => $response,
             'expected' => [],
         ];
-
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
-        $node->expects($this->any())->method('getSelector')->willReturn('meta');
 
         yield 'Attribute type with empty attribute name' => [
-            'node' => $node,
+            'node' => new Node(type: Type::ATTRIBUTE, selector: 'meta'),
             'response' => $response,
             'expected' => [],
         ];
 
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::ATTRIBUTE);
-        $node->expects($this->any())->method('getSelector')->willReturn('meta[property]');
-        $node->expects($this->any())->method('getAttribute')->willReturn('content');
-
         yield 'Attribute type with few results' => [
-            'node' => $node,
+            'node' => new Node(type: Type::ATTRIBUTE, selector: 'meta[property]', attribute: 'content'),
             'response' => $response,
             'expected' => [
                 'Google title of article',
@@ -136,24 +97,69 @@ final class ParserTest extends TestCase
             ],
         ];
 
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::LARGEST_NESTED_CONTENT);
-        $node->expects($this->any())->method('getSelector')->willReturn('body');
-
         yield 'Largest Nested Content type' => [
-            'node' => $node,
+            'node' => new Node(type: Type::LARGEST_NESTED_CONTENT, selector: 'body'),
             'response' => $response,
             'expected' => [
                 'Title of article Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean porta nec urna a finibus. Etiam fermentum suscipit mi eu finibus. Donec risus diam, fringilla id varius vel, varius ac ipsum. Integer blandit eros in interdum fringilla. Sed vel dui vestibulum, varius tortor eget, laoreet est. Link #1 Link #2 Link #3',
             ],
         ];
 
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::LARGEST_NESTED_CONTENT);
-        $node->expects($this->any())->method('getSelector')->willReturn('nav');
-
         yield 'Largest Nested Content type of undefined element' => [
-            'node' => $node,
+            'node' => new Node(type: Type::LARGEST_NESTED_CONTENT, selector: 'nav'),
+            'response' => $response,
+            'expected' => [],
+        ];
+
+        $response = (string) \file_get_contents(__DIR__ . '/stubs/rss_simple.xml');
+
+        yield 'RSS XML type Article titles' => [
+            'node' => new Node(type: Type::XML, selector: '//rss/channel/item/title'),
+            'response' => $response,
+            'expected' => [
+                'RSS Item #1',
+                'RSS Item #2',
+                'RSS Item #3',
+            ],
+        ];
+
+        yield 'RSS XML type Article tags' => [
+            'node' => new Node(type: Type::XML, selector: '//rss/channel/item/category'),
+            'response' => $response,
+            'expected' => [
+                'Sport',
+                'Ukraine',
+                'Europe',
+                'Women\'s football',
+                'Football',
+                'Sport',
+                'Football',
+                'Sport',
+            ],
+        ];
+
+        yield 'RSS Text type Article links' => [
+            'node' => new Node(type: Type::TEXT, selector: 'rss channel item guid'),
+            'response' => $response,
+            'expected' => [
+                'https://www.localhost.com/section/page-one',
+                'https://www.localhost.com/section/page-two',
+                'https://www.localhost.com/section/page-three',
+            ],
+        ];
+
+        yield 'RSS Attribute type Article images' => [
+            'node' => new Node(type: Type::ATTRIBUTE, selector: 'rss channel item *[width="460"]', attribute: 'url'),
+            'response' => $response,
+            'expected' => [
+                'https://www.localhost.com/image-2.png',
+                'https://www.localhost.com/image-4.png',
+                'https://www.localhost.com/image-6.png',
+            ],
+        ];
+
+        yield 'XML type of undefined element' => [
+            'node' => new Node(type: Type::XML, selector: '//rss/channel/item/abc'),
             'response' => $response,
             'expected' => [],
         ];
@@ -161,9 +167,7 @@ final class ParserTest extends TestCase
 
     public function testUnexpectedType(): void
     {
-        $node = $this->createMock(NodeInterface::class);
-        $node->expects($this->any())->method('getType')->willReturn(Type::TEXT);
-
+        $node = new Node(type: Type::TEXT, selector: '');
         $parser = new Parser();
 
         $property = new \ReflectionProperty(class: Parser::class, property: 'map');
@@ -172,8 +176,6 @@ final class ParserTest extends TestCase
         $this->expectException(UnexpectedTypeException::class);
 
         $result = $parser->getResult('', $node);
-
-        self::assertIsIterable($result);
 
         foreach ($result as $value) {
         }

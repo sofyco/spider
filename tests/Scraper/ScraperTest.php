@@ -4,23 +4,31 @@ namespace Sofyco\Spider\Tests\Scraper;
 
 use PHPUnit\Framework\TestCase;
 use Sofyco\Spider\Context;
-use Sofyco\Spider\Loader\LoaderInterface;
 use Sofyco\Spider\Scraper\Scraper;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class ScraperTest extends TestCase
 {
     public function testSuccessResult(): void
     {
-        $url = 'https://localhost/example';
         $content = '<html>...</html>';
+        $context = new Context(url: 'https://localhost/example');
 
-        $loader = $this->createMock(LoaderInterface::class);
-        $loader->expects($this->any())->method('getContent')->willReturn($content);
+        $response = $this->createMock(ResponseInterface::class);
+        $response
+            ->expects($this->once())
+            ->method('getContent')
+            ->willReturn($content);
 
-        $cache = new ArrayAdapter();
-        $context = new Context(url: $url);
-        $scraper = new Scraper($loader, $cache);
+        $httpClient = $this->createMock(HttpClientInterface::class);
+        $httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($context->getMethod(), $context->getUrl())
+            ->willReturn($response);
+
+        $scraper = new Scraper(httpClient: $httpClient);
 
         self::assertSame($content, $scraper->getResult($context));
     }

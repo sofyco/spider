@@ -1,0 +1,86 @@
+<rss xmlns:media="http://search.yahoo.com/mrss/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+    <channel>
+        <title>RSS Title</title>
+        <link>https://www.localhost.com/section</link>
+        <description>RSS Description</description>
+        <language>en-gb</language>
+        <copyright>All rights reserved. 2023</copyright>
+        <pubDate>Thu, 09 Feb 2023 17:27:16 GMT</pubDate>
+        <dc:date>2023-02-09T17:27:16Z</dc:date>
+        <dc:language>en-gb</dc:language>
+        <dc:rights>All rights reserved. 2023</dc:rights>
+        <image>
+            <title>The RSS</title>
+            <url>https://localhost/images/logo.png</url>
+            <link>https://www.localhost.com</link>
+        </image>
+        <item>
+            <title>RSS Item #1</title>
+            <link>https://www.localhost.com/section/page-one</link>
+            <description>
+                <ul>
+                    <li>Description point #1.1</li>
+                    <li>Description point #1.2</li>
+                </ul>
+                <p>Some description text #1</p>
+            </description>
+            <category domain="https://www.localhost.com/sport/sport">Sport</category>
+            <category domain="https://www.localhost.com/world/ukraine">Ukraine</category>
+            <category domain="https://www.localhost.com/world/europe-news">Europe</category>
+            <pubDate>Thu, 09 Feb 2023 12:22:34 GMT</pubDate>
+            <guid>https://www.localhost.com/section/page-one</guid>
+            <media:content width="140" url="https://www.localhost.com/image-1.png">
+                <media:credit scheme="urn:ebu">Photograph: AI Stock</media:credit>
+            </media:content>
+            <media:content width="460" url="https://www.localhost.com/image-2.png">
+                <media:credit scheme="urn:ebu">Photograph: AI Stock</media:credit>
+            </media:content>
+            <dc:creator>Author name #1</dc:creator>
+            <dc:date>2023-02-09T12:22:34Z</dc:date>
+        </item>
+        <item>
+            <title>RSS Item #2</title>
+            <link>https://www.localhost.com/section/page-two</link>
+            <description>
+                <ul>
+                    <li>Description point #2.1</li>
+                    <li>Description point #2.2</li>
+                </ul>
+                <p>Some description text #2</p>
+            </description>
+            <category domain="https://www.localhost.com/football/womensfootball">Women's football</category>
+            <category domain="https://www.localhost.com/football/football">Football</category>
+            <category domain="https://www.localhost.com/sport/sport">Sport</category>
+            <pubDate>Thu, 09 Feb 2023 15:14:51 GMT</pubDate>
+            <guid>https://www.localhost.com/section/page-two</guid>
+            <media:content width="140" url="https://www.localhost.com/image-3.png">
+                <media:credit scheme="urn:ebu">Photograph: AI Stock</media:credit>
+            </media:content>
+            <media:content width="460" url="https://www.localhost.com/image-4.png">
+                <media:credit scheme="urn:ebu">Photograph: AI Stock</media:credit>
+            </media:content>
+            <dc:creator>Author name #2</dc:creator>
+            <dc:date>2023-02-09T15:14:51Z</dc:date>
+        </item>
+        <item>
+            <title>RSS Item #3</title>
+            <link>https://www.localhost.com/section/page-three</link>
+            <description>
+                <ul>
+                    <li>Description point #3.1</li>
+                    <li>Description point #3.2</li>
+                </ul>
+                <p>Some description text #3</p>
+            </description>
+            <category domain="https://www.localhost.com/football/football">Football</category>
+            <category domain="https://www.localhost.com/sport/sport">Sport</category>
+            <pubDate>Thu, 09 Feb 2023 17:00:05 GMT</pubDate>
+            <guid>https://www.localhost.com/section/page-three</guid>
+            <media:content width="460" url="https://www.localhost.com/image-6.png">
+                <media:credit scheme="urn:ebu">Photograph: AI Stock</media:credit>
+            </media:content>
+            <dc:creator>Author name #3</dc:creator>
+            <dc:date>2023-02-09T17:00:05Z</dc:date>
+        </item>
+    </channel>
+</rss>

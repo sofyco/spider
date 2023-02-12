@@ -4,7 +4,7 @@ namespace Sofyco\Spider;
 
 final readonly class Context implements ContextInterface
 {
-    public function __construct(private string $url, private int $expiresAfter = 3600)
+    public function __construct(private string $url, private string $method = 'GET')
     {
     }
 
@@ -13,8 +13,8 @@ final readonly class Context implements ContextInterface
         return $this->url;
     }
 
-    public function getExpiresAfter(): int
+    public function getMethod(): string
     {
-        return $this->expiresAfter;
+        return $this->method;
     }
 }

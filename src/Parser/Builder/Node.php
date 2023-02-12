@@ -4,7 +4,7 @@ namespace Sofyco\Spider\Parser\Builder;
 
 final readonly class Node implements NodeInterface
 {
-    public function __construct(private Node\Type $type, private string $selector, private ?string $attribute)
+    public function __construct(private Node\Type $type, private string $selector, private ?string $attribute = null)
     {
     }
 

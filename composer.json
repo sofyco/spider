@@ -14,7 +14,6 @@
     "require": {
         "php": "^8.2",
         "ext-dom": "*",
-        "symfony/cache": "^6.2",
         "symfony/css-selector": "^6.2",
         "symfony/dom-crawler": "^6.2",
         "symfony/http-client": "^6.2"

@@ -3,24 +3,16 @@
 namespace Sofyco\Spider\Scraper;
 
 use Sofyco\Spider\ContextInterface;
-use Sofyco\Spider\Loader\LoaderInterface;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final readonly class Scraper implements ScraperInterface
 {
-    public function __construct(private LoaderInterface $loader, private CacheInterface $cache)
+    public function __construct(private HttpClientInterface $httpClient)
     {
     }
 
     public function getResult(ContextInterface $context): string
     {
-        $value = $this->cache->get(\md5($context->getUrl()), function (ItemInterface $item) use ($context) {
-            $item->expiresAfter($context->getExpiresAfter());
-
-            return $this->loader->getContent($context);
-        });
-
-        return \is_string($value) ? $value : '';
+        return $this->httpClient->request($context->getMethod(), $context->getUrl())->getContent();
     }
 }

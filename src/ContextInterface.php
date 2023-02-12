@@ -6,5 +6,5 @@ interface ContextInterface
 {
     public function getUrl(): string;
 
-    public function getExpiresAfter(): int;
+    public function getMethod(): string;
 }

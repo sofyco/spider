@@ -4,59 +4,61 @@ namespace Sofyco\Spider\Crawler;
 
 use Sofyco\Spider\Context;
 use Sofyco\Spider\ContextInterface;
-use Sofyco\Spider\Parser\Builder\Node;
 use Sofyco\Spider\Parser\Builder\NodeInterface;
 use Sofyco\Spider\Parser\ParserInterface;
 use Sofyco\Spider\Scraper\ScraperInterface;
 
 final readonly class Crawler implements CrawlerInterface
 {
-    private NodeInterface $node;
-
     public function __construct(private ScraperInterface $scraper, private ParserInterface $parser)
     {
-        $this->node = new Node(type: Node\Type::ATTRIBUTE, selector: 'a', attribute: 'href');
     }
 
     /**
      * @return ContextInterface[]
      */
-    public function getResult(ContextInterface $context): iterable
+    public function getResult(ContextInterface $context, NodeInterface $node): iterable
     {
-        $cache = [$context->getUrl()];
+        $links = [$context->getUrl()];
 
-        yield from $this->getCachedResult($context, $cache);
+        yield from $this->getRecursiveResult($context, $node, $links);
+
+        unset($links);
     }
 
-    public function getCachedResult(ContextInterface $context, array &$cache = []): iterable
+    private function getRecursiveResult(ContextInterface $context, NodeInterface $node, array &$links = []): iterable
     {
         $content = $this->scraper->getResult($context);
 
-        foreach ($this->parser->getResult($content, $this->node) as $link) {
+        foreach ($this->parser->getResult($content, $node) as $link) {
             if (null === $url = $this->prepareUrl($link, $context)) {
                 continue;
             }
 
-            if (\in_array($url, $cache)) {
+            if (\in_array($url, $links)) {
                 continue;
             }
 
-            $cache[] = $url;
+            $links[] = $url;
             $childContext = new Context(url: $url);
 
             yield $childContext;
-            yield from $this->getCachedResult($childContext, $cache);
+            yield from $this->getRecursiveResult($childContext, $node, $links);
         }
     }
 
-    private function prepareUrl(string $origin, ContextInterface $context): ?string
+    private function prepareUrl(string $link, ContextInterface $context): ?string
     {
-        $child = (array) \parse_url($origin);
+        $child = (array) \parse_url($link);
         $parent = (array) \parse_url($context->getUrl());
+
+        if (false === empty($child['host']) && $child['host'] !== ($parent['host'] ?? '')) {
+            return null;
+        }
 
         $url = $child['scheme'] ?? $parent['scheme'] ?? 'https';
         $url .= '://';
-        $url .= $child['host'] ?? $parent['host'] ?? throw new \InvalidArgumentException($origin);
+        $url .= $child['host'] ?? $parent['host'] ?? throw new \InvalidArgumentException($link);
 
         if (isset($child['path'])) {
             $url .= $child['path'];
@@ -64,10 +66,6 @@ final readonly class Crawler implements CrawlerInterface
 
         if (isset($child['query'])) {
             $url .= '?' . $child['query'];
-        }
-
-        if (($child['host'] ?? '') !== ($parent['host'] ?? '')) {
-            return null;
         }
 
         return $url;

@@ -16,8 +16,9 @@ final class Parser implements ParserInterface
     public function __construct()
     {
         $this->map = new \WeakMap();
+        $this->map[Type::XML] = new Result\XmlResult();
         $this->map[Type::TEXT] = new Result\TextResult();
-        $this->map[Type::HTML] = new Result\HTMLResult();
+        $this->map[Type::HTML] = new Result\HtmlResult();
         $this->map[Type::ATTRIBUTE] = new Result\AttributeResult();
         $this->map[Type::LARGEST_NESTED_CONTENT] = new Result\LargestNestedContentResult();
     }

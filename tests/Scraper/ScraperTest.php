@@ -4,6 +4,7 @@ namespace Sofyco\Spider\Tests\Scraper;
 
 use PHPUnit\Framework\TestCase;
 use Sofyco\Spider\Context;
+use Sofyco\Spider\Scraper\Enum\HttpMethod;
 use Sofyco\Spider\Scraper\Scraper;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -25,7 +26,7 @@ final class ScraperTest extends TestCase
         $httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($context->getMethod(), $context->getUrl())
+            ->with(HttpMethod::GET->value, $context->getUrl())
             ->willReturn($response);
 
         $scraper = new Scraper(httpClient: $httpClient);

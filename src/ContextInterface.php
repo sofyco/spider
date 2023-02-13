@@ -5,6 +5,4 @@ namespace Sofyco\Spider;
 interface ContextInterface
 {
     public function getUrl(): string;
-
-    public function getMethod(): string;
 }

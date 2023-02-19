@@ -23,7 +23,7 @@ final class Parser implements ParserInterface
         $this->map[Type::LARGEST_NESTED_CONTENT] = new Result\LargestNestedContentResult();
     }
 
-    public function getResult(string $response, NodeInterface $node): iterable
+    public function getResult(string $response, NodeInterface $node): \Generator
     {
         $typeResult = $this->map[$node->getType()] ?? null;
 

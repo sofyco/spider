@@ -11,7 +11,10 @@ use Sofyco\Spider\Parser\Builder\NodeInterface;
 interface CrawlerInterface
 {
     /**
-     * @return ContextInterface[]
+     * @param ContextInterface $context
+     * @param NodeInterface $node
+     *
+     * @return \Generator<int, ContextInterface>
      */
-    public function getResult(ContextInterface $context, NodeInterface $node): iterable;
+    public function getResult(ContextInterface $context, NodeInterface $node): \Generator;
 }

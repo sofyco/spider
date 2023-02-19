@@ -10,7 +10,10 @@ use Sofyco\Spider\Parser\Builder\NodeInterface;
 interface ParserInterface
 {
     /**
-     * @return string[]
+     * @param string $response
+     * @param NodeInterface $node
+     *
+     * @return \Generator<int, string>
      */
-    public function getResult(string $response, NodeInterface $node): iterable;
+    public function getResult(string $response, NodeInterface $node): \Generator;
 }

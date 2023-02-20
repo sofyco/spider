@@ -7,9 +7,9 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class TextResult implements ResultInterface
 {
-    public function getResult(Crawler $crawler, NodeInterface $node): iterable
+    public function getResult(Crawler $crawler, NodeInterface $node): \Generator
     {
-        $elements = $crawler->filter($node->getSelector());
+        $elements = $crawler->filter(selector: $node->getSelector());
 
         if (0 === $elements->count()) {
             return;

@@ -7,9 +7,9 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class HtmlResult implements ResultInterface
 {
-    public function getResult(Crawler $crawler, NodeInterface $node): iterable
+    public function getResult(Crawler $crawler, NodeInterface $node): \Generator
     {
-        $elements = $crawler->filter($node->getSelector());
+        $elements = $crawler->filter(selector: $node->getSelector());
 
         if (0 === $elements->count()) {
             return;
@@ -18,7 +18,7 @@ final class HtmlResult implements ResultInterface
         /** @var \DOMElement $element */
         foreach ($elements as $element) {
             if (null !== $element->ownerDocument) {
-                $value = \trim((string) $element->ownerDocument->saveHTML($element));
+                $value = \trim((string) $element->ownerDocument->saveHTML(node: $element));
 
                 if (false === empty($value)) {
                     yield $value;

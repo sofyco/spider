@@ -14,7 +14,7 @@ interface CrawlerInterface
      * @param ContextInterface $context
      * @param NodeInterface $node
      *
-     * @return \Generator<int, ContextInterface>
+     * @return \Generator<ContextInterface>
      */
     public function getResult(ContextInterface $context, NodeInterface $node): \Generator;
 }

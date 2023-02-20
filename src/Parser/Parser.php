@@ -4,6 +4,7 @@ namespace Sofyco\Spider\Parser;
 
 use Sofyco\Spider\Parser\Builder\Node\Type;
 use Sofyco\Spider\Parser\Builder\NodeInterface;
+use Sofyco\Spider\Parser\Result\ResultInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class Parser implements ParserInterface
@@ -23,14 +24,14 @@ final class Parser implements ParserInterface
         $this->map[Type::LARGEST_NESTED_CONTENT] = new Result\LargestNestedContentResult();
     }
 
-    public function getResult(string $response, NodeInterface $node): \Generator
+    public function getResult(string $content, NodeInterface $node): \Generator
     {
         $typeResult = $this->map[$node->getType()] ?? null;
 
-        if (null === $typeResult) {
+        if (!$typeResult instanceof ResultInterface) {
             throw new Exception\UnexpectedTypeException($node->getType());
         }
 
-        yield from $typeResult->getResult(new Crawler($response), $node);
+        yield from $typeResult->getResult(crawler: new Crawler(node: $content), node: $node);
     }
 }

@@ -7,9 +7,9 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class AttributeResult implements ResultInterface
 {
-    public function getResult(Crawler $crawler, NodeInterface $node): iterable
+    public function getResult(Crawler $crawler, NodeInterface $node): \Generator
     {
-        $elements = $crawler->filter($node->getSelector());
+        $elements = $crawler->filter(selector: $node->getSelector());
 
         if (0 === $elements->count()) {
             return;
@@ -21,7 +21,7 @@ final class AttributeResult implements ResultInterface
 
         /** @var \DOMElement $element */
         foreach ($elements as $element) {
-            $value = \trim($element->getAttribute($node->getAttribute()));
+            $value = \trim($element->getAttribute(qualifiedName: $node->getAttribute()));
 
             if (false === empty($value)) {
                 yield $value;

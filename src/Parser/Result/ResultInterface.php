@@ -8,7 +8,10 @@ use Symfony\Component\DomCrawler\Crawler;
 interface ResultInterface
 {
     /**
-     * @return string[]
+     * @param Crawler $crawler
+     * @param NodeInterface $node
+     *
+     * @return \Generator<string>
      */
-    public function getResult(Crawler $crawler, NodeInterface $node): iterable;
+    public function getResult(Crawler $crawler, NodeInterface $node): \Generator;
 }

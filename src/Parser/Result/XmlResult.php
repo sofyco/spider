@@ -7,9 +7,9 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class XmlResult implements ResultInterface
 {
-    public function getResult(Crawler $crawler, NodeInterface $node): iterable
+    public function getResult(Crawler $crawler, NodeInterface $node): \Generator
     {
-        $elements = $crawler->filterXPath($node->getSelector());
+        $elements = $crawler->filterXPath(xpath: $node->getSelector());
 
         if (0 === $elements->count()) {
             return;

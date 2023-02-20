@@ -18,7 +18,7 @@ final readonly class Crawler implements CrawlerInterface
     {
         $links = [$context->getUrl()];
 
-        yield from $this->getRecursiveResult($context, $node, $links);
+        yield from $this->getRecursiveResult(context: $context, node: $node, links: $links);
 
         unset($links);
     }
@@ -28,14 +28,14 @@ final readonly class Crawler implements CrawlerInterface
      * @param NodeInterface $node
      * @param array $links
      *
-     * @return \Generator<int, ContextInterface>
+     * @return \Generator<ContextInterface>
      */
     private function getRecursiveResult(ContextInterface $context, NodeInterface $node, array &$links = []): \Generator
     {
-        $content = $this->scraper->getResult($context);
+        $content = $this->scraper->getResult(context: $context);
 
-        foreach ($this->parser->getResult($content, $node) as $link) {
-            if (null === $url = $this->prepareUrl($link, $context)) {
+        foreach ($this->parser->getResult(content: $content, node: $node) as $link) {
+            if (null === $url = $this->prepareUrl(link: $link, context: $context)) {
                 continue;
             }
 
@@ -47,7 +47,7 @@ final readonly class Crawler implements CrawlerInterface
             $childContext = new Context(url: $url);
 
             yield $childContext;
-            yield from $this->getRecursiveResult($childContext, $node, $links);
+            yield from $this->getRecursiveResult(context: $childContext, node: $node, links: $links);
         }
     }
 
@@ -62,7 +62,7 @@ final readonly class Crawler implements CrawlerInterface
 
         $url = $child['scheme'] ?? $parent['scheme'] ?? 'https';
         $url .= '://';
-        $url .= $child['host'] ?? $parent['host'] ?? throw new \InvalidArgumentException($link);
+        $url .= $child['host'] ?? $parent['host'] ?? throw new \InvalidArgumentException(message: $link);
 
         if (isset($child['path'])) {
             $url .= $child['path'];

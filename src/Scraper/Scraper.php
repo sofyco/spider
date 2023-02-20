@@ -3,7 +3,6 @@
 namespace Sofyco\Spider\Scraper;
 
 use Sofyco\Spider\ContextInterface;
-use Sofyco\Spider\Scraper\Enum\HttpMethod;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final readonly class Scraper implements ScraperInterface
@@ -12,8 +11,8 @@ final readonly class Scraper implements ScraperInterface
     {
     }
 
-    public function getResult(ContextInterface $context, HttpMethod $httpMethod = HttpMethod::GET): string
+    public function getResult(ContextInterface $context): string
     {
-        return $this->httpClient->request($httpMethod->value, $context->getUrl())->getContent();
+        return $this->httpClient->request(method: 'GET', url: $context->getUrl())->getContent();
     }
 }

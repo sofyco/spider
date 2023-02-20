@@ -7,10 +7,10 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class LargestNestedContentResult implements ResultInterface
 {
-    public function getResult(Crawler $crawler, NodeInterface $node): iterable
+    public function getResult(Crawler $crawler, NodeInterface $node): \Generator
     {
         $crawler = $this->removeElements($crawler, 'style', 'script');
-        $element = $this->getLargestNestedElement($crawler->filter($node->getSelector()));
+        $element = $this->getLargestNestedElement(currentElement: $crawler->filter(selector: $node->getSelector()));
 
         if ($element->count()) {
             yield $element->text();
@@ -40,7 +40,7 @@ final class LargestNestedContentResult implements ResultInterface
 
         $currentLength = \array_key_first($nodes);
 
-        $nestedElement = $this->getLargestNestedElement(new Crawler($nodes[$currentLength]));
+        $nestedElement = $this->getLargestNestedElement(currentElement: new Crawler($nodes[$currentLength]));
         $nestedLength = \mb_strlen($nestedElement->text());
 
         if ($currentLength / 2 > $nestedLength) {
@@ -56,12 +56,12 @@ final class LargestNestedContentResult implements ResultInterface
         $document = $crawler->getIterator()->current();
 
         foreach ($tags as $tagName) {
-            $elements = $document->getElementsByTagName($tagName);
+            $elements = $document->getElementsByTagName(qualifiedName: $tagName);
 
             for ($i = $elements->length - 1; $i >= 0; --$i) {
                 /** @var \DOMElement $node */
-                $node = $elements->item($i);
-                $node->parentNode?->removeChild($node);
+                $node = $elements->item(index: $i);
+                $node->parentNode?->removeChild(child: $node);
             }
         }
 

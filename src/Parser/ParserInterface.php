@@ -5,15 +5,15 @@ namespace Sofyco\Spider\Parser;
 use Sofyco\Spider\Parser\Builder\NodeInterface;
 
 /**
- * Parser processes or analyses given data to make of them proper data structures.
+ * The parser processes or parses given data to make of them proper data structures.
  */
 interface ParserInterface
 {
     /**
-     * @param string $response
+     * @param string $content
      * @param NodeInterface $node
      *
-     * @return \Generator<int, string>
+     * @return \Generator<string>
      */
-    public function getResult(string $response, NodeInterface $node): \Generator;
+    public function getResult(string $content, NodeInterface $node): \Generator;
 }

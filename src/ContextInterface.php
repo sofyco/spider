@@ -5,4 +5,8 @@ namespace Sofyco\Spider;
 interface ContextInterface
 {
     public function getUrl(): string;
+
+    public function setContent(string $content): void;
+
+    public function getContent(): ?string;
 }

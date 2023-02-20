@@ -8,6 +8,6 @@ final class UnexpectedTypeException extends \InvalidArgumentException
 {
     public function __construct(Type $type)
     {
-        parent::__construct(\sprintf('Unexpected node type "%s"', $type->name));
+        parent::__construct(message: \sprintf('Unexpected node type "%s"', $type->name));
     }
 }

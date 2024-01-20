@@ -2,6 +2,7 @@
 
 namespace Sofyco\Spider\Tests\Parser;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Sofyco\Spider\Parser\Builder\Node;
 use Sofyco\Spider\Parser\Builder\Node\Type;
@@ -11,9 +12,7 @@ use Sofyco\Spider\Parser\Parser;
 
 final class ParserTest extends TestCase
 {
-    /**
-     * @dataProvider typeProvider
-     */
+    #[DataProvider(methodName: 'typeProvider')]
     public function testTypeResult(NodeInterface $node, string $response, array $expected): void
     {
         $parser = new Parser();
@@ -26,7 +25,7 @@ final class ParserTest extends TestCase
         }
     }
 
-    public function typeProvider(): iterable
+    public static function typeProvider(): iterable
     {
         $response = (string) \file_get_contents(__DIR__ . '/stubs/index.html');
 
@@ -177,7 +176,6 @@ final class ParserTest extends TestCase
 
         $result = $parser->getResult('', $node);
 
-        foreach ($result as $value) {
-        }
+        \iterator_to_array($result);
     }
 }

@@ -13,7 +13,7 @@ final class LargestNestedContentResult implements ResultInterface
         $element = $this->getLargestNestedElement(currentElement: $crawler->filter(selector: $node->getSelector()));
 
         if ($element->count()) {
-            yield $element->text();
+            yield $element->html();
         }
     }
 
@@ -40,11 +40,12 @@ final class LargestNestedContentResult implements ResultInterface
 
         $currentLength = \array_key_first($nodes);
 
-        $nestedElement = $this->getLargestNestedElement(currentElement: new Crawler($nodes[$currentLength]));
+        $maxLengthElement = new Crawler($nodes[$currentLength]);
+        $nestedElement = $this->getLargestNestedElement(currentElement: $maxLengthElement);
         $nestedLength = \mb_strlen($nestedElement->text());
 
         if ($currentLength / 2 > $nestedLength) {
-            return $currentElement;
+            return $maxLengthElement;
         }
 
         return $nestedElement;

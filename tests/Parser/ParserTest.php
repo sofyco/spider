@@ -100,7 +100,7 @@ final class ParserTest extends TestCase
             'node' => new Node(type: Type::LARGEST_NESTED_CONTENT, selector: 'body'),
             'response' => $response,
             'expected' => [
-                'Title of article Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean porta nec urna a finibus. Etiam fermentum suscipit mi eu finibus. Donec risus diam, fringilla id varius vel, varius ac ipsum. Integer blandit eros in interdum fringilla. Sed vel dui vestibulum, varius tortor eget, laoreet est. Link #1 Link #2 Link #3',
+                'Donec risus diam, fringilla id varius vel, varius ac ipsum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer blandit eros in interdum fringilla. Integer blandit eros in interdum fringilla.',
             ],
         ];
 

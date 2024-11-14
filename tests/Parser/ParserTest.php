@@ -104,6 +104,14 @@ final class ParserTest extends TestCase
             ],
         ];
 
+        yield 'Largest Nested Content type in article' => [
+            'node' => new Node(type: Type::LARGEST_NESTED_CONTENT, selector: 'article'),
+            'response' => $response,
+            'expected' => [
+                'Donec risus diam, fringilla id varius vel, varius ac ipsum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer blandit eros in interdum fringilla. Integer blandit eros in interdum fringilla.',
+            ],
+        ];
+
         yield 'Largest Nested Content type of undefined element' => [
             'node' => new Node(type: Type::LARGEST_NESTED_CONTENT, selector: 'nav'),
             'response' => $response,

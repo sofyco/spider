@@ -24,9 +24,7 @@ final readonly class Crawler implements CrawlerInterface
     }
 
     /**
-     * @param ContextInterface $context
-     * @param NodeInterface $node
-     * @param array $links
+     * @param string[] $links
      *
      * @return \Generator<ContextInterface>
      */

@@ -20,7 +20,7 @@ final class CrawlerTest extends TestCase
         $scraper
             ->expects($this->any())
             ->method('getResult')
-            ->will($this->returnCallback(function (ContextInterface $context) {
+            ->willReturnCallback(function (ContextInterface $context) {
                 $filename = match ($context->getUrl()) {
                     'https://localhost/page1' => __DIR__ . '/stubs/page1.html',
                     'https://localhost/page2' => __DIR__ . '/stubs/page2.html',
@@ -31,7 +31,7 @@ final class CrawlerTest extends TestCase
                 };
 
                 return \file_get_contents($filename);
-            }));
+            });
 
         $crawler = new Crawler(scraper: $scraper, parser: new Parser());
 

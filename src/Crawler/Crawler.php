@@ -19,8 +19,6 @@ final readonly class Crawler implements CrawlerInterface
         $links = [$context->getUrl()];
 
         yield from $this->getRecursiveResult(context: $context, node: $node, links: $links);
-
-        unset($links);
     }
 
     /**
@@ -28,8 +26,9 @@ final readonly class Crawler implements CrawlerInterface
      *
      * @return \Generator<ContextInterface>
      */
-    private function getRecursiveResult(ContextInterface $context, NodeInterface $node, array &$links = []): \Generator
+    private function getRecursiveResult(ContextInterface $context, NodeInterface $node, array &$links): \Generator
     {
+        $childContext = [];
         $content = $this->scraper->getResult(context: $context);
 
         foreach ($this->parser->getResult(content: $content, node: $node) as $link) {
@@ -42,10 +41,13 @@ final readonly class Crawler implements CrawlerInterface
             }
 
             $links[] = $url;
-            $childContext = new Context(url: $url);
+            $childContext[] = new Context(url: $url);
+        }
 
-            yield $childContext;
-            yield from $this->getRecursiveResult(context: $childContext, node: $node, links: $links);
+        yield from $childContext;
+
+        foreach ($childContext as $child) {
+            yield from $this->getRecursiveResult(context: $child, node: $node, links: $links);
         }
     }
 

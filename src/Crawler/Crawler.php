@@ -8,70 +8,82 @@ use Sofyco\Spider\Parser\Builder\NodeInterface;
 use Sofyco\Spider\Parser\ParserInterface;
 use Sofyco\Spider\Scraper\ScraperInterface;
 
-final readonly class Crawler implements CrawlerInterface
+final class Crawler implements CrawlerInterface
 {
-    public function __construct(private ScraperInterface $scraper, private ParserInterface $parser)
+    private array $urls = [];
+
+    public function __construct(private readonly ScraperInterface $scraper, private readonly ParserInterface $parser)
     {
     }
 
     public function getResult(ContextInterface $context, NodeInterface $node): \Generator
     {
-        $links = [$context->getUrl()];
+        $this->addCachedUrl(url: $context->getUrl());
 
-        yield from $this->getRecursiveResult(context: $context, node: $node, links: $links);
+        yield from $this->getRecursiveResult(context: $context, node: $node);
     }
 
     /**
-     * @param string[] $links
-     *
      * @return \Generator<ContextInterface>
      */
-    private function getRecursiveResult(ContextInterface $context, NodeInterface $node, array &$links): \Generator
+    private function getRecursiveResult(ContextInterface $context, NodeInterface $node): \Generator
     {
         $childContext = [];
         $content = $this->scraper->getResult(context: $context);
 
-        foreach ($this->parser->getResult(content: $content, node: $node) as $link) {
-            if (null === $url = $this->prepareUrl(link: $link, context: $context)) {
+        foreach ($this->parser->getResult(content: $content, node: $node) as $url) {
+            if (null === $url = $this->prepareUrl(url: $url, context: $context)) {
                 continue;
             }
 
-            if (\in_array($url, $links)) {
+            if ($this->hasCachedUrl(url: $url)) {
                 continue;
             }
 
-            $links[] = $url;
+            $this->addCachedUrl(url: $url);
             $childContext[] = new Context(url: $url);
         }
 
         yield from $childContext;
 
         foreach ($childContext as $child) {
-            yield from $this->getRecursiveResult(context: $child, node: $node, links: $links);
+            yield from $this->getRecursiveResult(context: $child, node: $node);
         }
     }
 
-    private function prepareUrl(string $link, ContextInterface $context): ?string
+    private function prepareUrl(string $url, ContextInterface $context): ?string
     {
-        $child = (array) \parse_url($link);
-        $parent = (array) \parse_url($context->getUrl());
+        $child = (array) parse_url($url);
+        $parent = (array) parse_url($context->getUrl());
 
         if (false === empty($child['host']) && $child['host'] !== ($parent['host'] ?? '')) {
             return null;
         }
 
-        $url = $child['scheme'] ?? $parent['scheme'] ?? 'https';
-        $url .= '://';
-        $url .= $child['host'] ?? $parent['host'] ?? throw new \InvalidArgumentException(message: $link);
+        $result = $child['scheme'] ?? $parent['scheme'] ?? 'https';
+        $result .= '://';
+        $result .= $child['host'] ?? $parent['host'] ?? throw new \InvalidArgumentException(message: $url);
 
         if (isset($child['path'])) {
-            $url .= $child['path'];
+            $result .= $child['path'];
         }
 
         if (isset($child['query'])) {
-            $url .= '?' . $child['query'];
+            $result .= '?' . $child['query'];
+        } else {
+            $result = rtrim($result, '/');
         }
 
-        return $url;
+        return $result;
+    }
+
+    private function addCachedUrl(string $url): void
+    {
+        $this->urls[] = md5($url);
+    }
+
+    private function hasCachedUrl(string $url): bool
+    {
+        return in_array(md5($url), $this->urls);
     }
 }

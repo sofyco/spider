@@ -10,28 +10,44 @@ use Sofyco\Spider\Scraper\ScraperInterface;
 
 final class Crawler implements CrawlerInterface
 {
-    private array $urls = [];
+    /**
+     * @var string[]
+     */
+    private array $cache;
+
+    /**
+     * @var \SplQueue<ContextInterface>
+     */
+    private readonly \SplQueue $queue;
 
     public function __construct(private readonly ScraperInterface $scraper, private readonly ParserInterface $parser)
     {
+        $this->cache = [];
+        $this->queue = new \SplQueue();
     }
 
     public function getResult(ContextInterface $context, NodeInterface $node): \Generator
     {
         $this->addCachedUrl(url: $context->getUrl());
+        $this->queue->enqueue($context);
 
-        yield from $this->getRecursiveResult(context: $context, node: $node);
+        while (false === $this->queue->isEmpty()) {
+            foreach ($this->getChildContext(context: $this->queue->dequeue(), node: $node) as $childContext) {
+                $this->queue->enqueue($childContext);
+
+                yield $childContext;
+            }
+        }
     }
 
     /**
      * @return \Generator<ContextInterface>
      */
-    private function getRecursiveResult(ContextInterface $context, NodeInterface $node): \Generator
+    private function getChildContext(ContextInterface $context, NodeInterface $node): \Generator
     {
-        $childContext = [];
-        $content = $this->scraper->getResult(context: $context);
+        $result = [];
 
-        foreach ($this->parser->getResult(content: $content, node: $node) as $url) {
+        foreach ($this->parser->getResult(content: $this->scraper->getResult(context: $context), node: $node) as $url) {
             if (null === $url = $this->prepareUrl(url: $url, context: $context)) {
                 continue;
             }
@@ -41,14 +57,11 @@ final class Crawler implements CrawlerInterface
             }
 
             $this->addCachedUrl(url: $url);
-            $childContext[] = new Context(url: $url);
+
+            $result[] = new Context(url: $url);
         }
 
-        yield from $childContext;
-
-        foreach ($childContext as $child) {
-            yield from $this->getRecursiveResult(context: $child, node: $node);
-        }
+        yield from $result;
     }
 
     private function prepareUrl(string $url, ContextInterface $context): ?string
@@ -79,11 +92,11 @@ final class Crawler implements CrawlerInterface
 
     private function addCachedUrl(string $url): void
     {
-        $this->urls[] = md5($url);
+        $this->cache[] = $url;
     }
 
     private function hasCachedUrl(string $url): bool
     {
-        return in_array(md5($url), $this->urls);
+        return in_array($url, $this->cache);
     }
 }

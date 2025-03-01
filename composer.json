@@ -14,9 +14,9 @@
     "require": {
         "php": "^8.3",
         "ext-dom": "*",
+        "ext-curl": "*",
         "symfony/css-selector": "^7.1",
-        "symfony/dom-crawler": "^7.1",
-        "symfony/http-client": "^7.1"
+        "symfony/dom-crawler": "^7.1"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.12",

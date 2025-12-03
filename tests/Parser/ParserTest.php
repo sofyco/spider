@@ -12,22 +12,32 @@ use Sofyco\Spider\Parser\Parser;
 
 final class ParserTest extends TestCase
 {
-    #[DataProvider(methodName: 'typeProvider')]
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        restore_exception_handler();
+    }
+
+    #[DataProvider('typeProvider')]
     public function testTypeResult(NodeInterface $node, string $response, array $expected): void
     {
         $parser = new Parser();
         $result = $parser->getResult($response, $node);
 
-        self::assertIsIterable($result);
-
-        foreach ($result as $index => $value) {
-            self::assertSame($expected[$index], $value);
+        if (empty($expected)) {
+            self::assertEmpty(iterator_to_array($result));
+        } else {
+            /** @var int $index */
+            foreach ($result as $index => $value) {
+                self::assertSame($expected[$index], $value);
+            }
         }
     }
 
     public static function typeProvider(): iterable
     {
-        $response = (string) \file_get_contents(__DIR__ . '/stubs/index.html');
+        $response = (string) file_get_contents(__DIR__ . '/stubs/index.html');
 
         yield 'Text type' => [
             'node' => new Node(type: Type::TEXT, selector: 'a'),
@@ -184,6 +194,6 @@ final class ParserTest extends TestCase
 
         $result = $parser->getResult('', $node);
 
-        \iterator_to_array($result);
+        iterator_to_array($result);
     }
 }

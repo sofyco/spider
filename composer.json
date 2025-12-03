@@ -1,6 +1,7 @@
 {
     "name": "sofyco/spider",
     "type": "library",
+    "version": "3.0.0",
     "description": "Crawler + Scraper + Parser library",
     "keywords": ["php", "crawler", "scraper", "parser", "builder"],
     "homepage": "https://github.com/sofyco/spider",
@@ -12,15 +13,15 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.5",
         "ext-dom": "*",
         "ext-curl": "*",
-        "symfony/css-selector": "^7.1",
-        "symfony/dom-crawler": "^7.1"
+        "symfony/css-selector": "^8.0",
+        "symfony/dom-crawler": "^8.0"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.12",
-        "phpunit/phpunit": "^11.4"
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^12.4"
     },
     "autoload": {
         "psr-4": {

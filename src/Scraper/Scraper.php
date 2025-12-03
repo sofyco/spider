@@ -12,10 +12,10 @@ final readonly class Scraper implements ScraperInterface
 
         curl_setopt(handle: $handle, option: CURLOPT_RETURNTRANSFER, value: true);
         curl_setopt(handle: $handle, option: CURLOPT_FOLLOWLOCATION, value: true);
+        curl_setopt(handle: $handle, option: CURLOPT_SSL_VERIFYPEER, value: false);
 
         $response = curl_exec(handle: $handle);
         $error = curl_error(handle: $handle);
-        curl_close(handle: $handle);
 
         if (false === is_string($response)) {
             throw new \RuntimeException(message: 'cURL error: ' . $error);
